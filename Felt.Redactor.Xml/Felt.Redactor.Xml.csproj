@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Richard Ramer</Authors>
+
+    <PackageId>Felt.Redactor.Xml</PackageId>
+    <Description>Mask sensitive information within xml structured text.</Description>
+    <PackageProjectUrl>https://github.com/raramer/Felt.Redactor.Xml</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>1.0.3</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Felt.Redactor" Version="1.0.3" />
+  </ItemGroup>
+
+</Project>
