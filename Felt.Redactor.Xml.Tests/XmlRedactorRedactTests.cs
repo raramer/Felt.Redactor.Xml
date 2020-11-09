@@ -50,9 +50,20 @@ namespace Felt.Redactor.Xml.Tests
             <n><![CDATA[<o>XV</o>]]></n>
         </root>";
 
+        public static object[][] ComplexTypeHandlingIs_Data = new[]
+        {
+            new object[] { ComplexTypeHandling.RedactValue, "<root xmlns:ns=\"https://xml.org/ns\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><a>A</a><b>1&amp;one</b><c>true</c><d>[REDACTED]</d><k /><l xsi:nil=\"true\" /><!-- this is a comment <m>thirteen</m> --><n><![CDATA[<o>XV</o>]]></n></root>" },
+            new object[] { ComplexTypeHandling.RedactDescendants, $"<root xmlns:ns=\"https://xml.org/ns\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><a>A</a><b>1&amp;one</b><c>true</c><d>{Environment.NewLine}                MIXED CONTENT{Environment.NewLine}                <e f=\"'7'\" g=\"&quot;8&quot;\">[REDACTED]</e><ns:h ns:i=\"IX\"><ns:j>[REDACTED]</ns:j><ns:j>[REDACTED]</ns:j></ns:h></d><k /><l xsi:nil=\"true\" /><!-- this is a comment <m>thirteen</m> --><n><![CDATA[<o>XV</o>]]></n></root>" }
+        };
+
+        public static object[][] FormattingIs_Data = new[]
+        {
+            new object[] { XmlRedactorFormatting.Compressed, "<root><a>[REDACTED]</a><b c=\"3\">2</b></root>" },
+            new object[] { XmlRedactorFormatting.Indented, $"<root>{Environment.NewLine}  <a>[REDACTED]</a>{Environment.NewLine}  <b c=\"3\">2</b>{Environment.NewLine}</root>" }
+        };
+
         [Theory]
-        [InlineData(ComplexTypeHandling.RedactValue, "<root xmlns:ns=\"https://xml.org/ns\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><a>A</a><b>1&amp;one</b><c>true</c><d>[REDACTED]</d><k /><l xsi:nil=\"true\" /><!-- this is a comment <m>thirteen</m> --><n><![CDATA[<o>XV</o>]]></n></root>")]
-        [InlineData(ComplexTypeHandling.RedactDescendants, "<root xmlns:ns=\"https://xml.org/ns\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><a>A</a><b>1&amp;one</b><c>true</c><d>\r\n                MIXED CONTENT\r\n                <e f=\"'7'\" g=\"&quot;8&quot;\">[REDACTED]</e><ns:h ns:i=\"IX\"><ns:j>[REDACTED]</ns:j><ns:j>[REDACTED]</ns:j></ns:h></d><k /><l xsi:nil=\"true\" /><!-- this is a comment <m>thirteen</m> --><n><![CDATA[<o>XV</o>]]></n></root>")]
+        [MemberData(nameof(ComplexTypeHandlingIs_Data))]
         public void ComplexTypeHandlingIs(ComplexTypeHandling complexTypeHandling, string expectedResult)
         {
             var redactor = new XmlRedactor(new XmlRedactorOptions
@@ -67,8 +78,7 @@ namespace Felt.Redactor.Xml.Tests
         }
 
         [Theory]
-        [InlineData(XmlRedactorFormatting.Compressed, "<root><a>[REDACTED]</a><b c=\"3\">2</b></root>")]
-        [InlineData(XmlRedactorFormatting.Indented, "<root>\r\n  <a>[REDACTED]</a>\r\n  <b c=\"3\">2</b>\r\n</root>")]
+        [MemberData(nameof(FormattingIs_Data))]
         public void FormattingIs(XmlRedactorFormatting formatting, string expectedResult)
         {
             var redactor = new XmlRedactor(new XmlRedactorOptions
